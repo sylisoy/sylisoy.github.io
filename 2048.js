@@ -225,7 +225,8 @@ class Game {
         let c=localStorage.getItem("maxScore");
         this.maxScore=this.maxScore>c?this.maxScore:c;
 
-        localStorage.setItem("maxScore", this.maxScore);
+        //将null转换为数字0
+        localStorage.setItem("maxScore", Number(this.maxScore));
 
         if (moves.length != 0) {
             this.generateNewblock();
@@ -369,21 +370,6 @@ class View {
             //创建二维数组的另外一种方法
             this.blocks.push(temp);
         }
-        for (let i = 0; i < gameSize; i++) {
-            let temp = [];
-            for (let j = 0; j < gameSize; j++) {
-                this.drawBackgroundBlock(i, j, BackGroundColor);
-                //保证是4*4矩阵
-                let block = null;
-                if (this.game.data[i][j]) {
-                    block = this.drawBlock(i, j, this.game.data[i][j]);
-                }
-                temp.push(block);
-            }
-            //创建二维数组的另外一种方法
-            this.blocks.push(temp);
-        }
-
     }
     drawBackgroundBlock(i, j, color) {
         let block = document.createElement('div');
@@ -463,7 +449,11 @@ let bestPoints=document.getElementById('best-score');
 let restart=document.querySelector('.new-game');
 let game = new Game();
 let view = new View(container, game);
+if (!localStorage.getItem("maxScore")) {
+    localStorage.setItem("maxScore",0);
+}
 view.drawGame();
+
 bestPoints.innerText=`${localStorage.getItem("maxScore")}`;
 //重新开始游戏
 restart.addEventListener('click',function () {
